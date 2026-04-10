@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch src/socket-back.js",
+    "start": "node src/socket-back.js"
   },
   "keywords": [],
   "author": "",
