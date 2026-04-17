@@ -1,49 +1,29 @@
+import "dotenv/config";
+import { findDocument, updateDocument } from "./db-documents.js"
 import io from "./server.js"
 
-const documents = [
-    {
-        name: "JavaScript",
-        text: "texto de javascript"
-    },
-    {
-        name: "Node",
-        text: "texto de node"
-    },
-    {
-        name: "Socket.io",
-        text: "texto de socket io"
-    }
-]
 
 io.on("connection", (socket) => {
     console.log("Um cliente se conectou ao servidor, ID:", socket.id)
 
-    socket.on("text_editor", ({ text, documentName }) => {
+    socket.on("text_editor", async ({ text, documentName }) => {
 
-        const document = findDocument(documentName)
+        const update = await updateDocument(documentName, text)
 
-        if (document) {
-            document.text = text
+        if (update.modifiedCount > 0) {
             socket.to(documentName).emit("text_editor_client", text)
         }
     })
 
-    socket.on("select_document", (documentName, responseText) => {
+    socket.on("select_document", async (documentName, responseText) => {
         socket.join(documentName)
 
-        const document = findDocument(documentName)
+        const document = await findDocument(documentName)
 
         if (document) {
-            responseText(document.text)
+            responseText(document.texto)
         }
 
     })
 })
 
-function findDocument(name) {
-    const document = documents.find((document) => {
-        return document.name === name
-    })
-
-    return document
-}
