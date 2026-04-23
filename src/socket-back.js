@@ -1,10 +1,14 @@
 import "dotenv/config";
-import { findDocument, updateDocument } from "./db-documents.js"
+import { addDocument, findDocument, getDocuments, updateDocument } from "./db-documents.js"
 import io from "./server.js"
 
 
 io.on("connection", (socket) => {
-    console.log("Um cliente se conectou ao servidor, ID:", socket.id)
+    socket.on("get_documents", async (returnDocuments) => {
+        const documents = await getDocuments()
+
+        returnDocuments(documents)
+    })
 
     socket.on("text_editor", async ({ text, documentName }) => {
 
@@ -23,7 +27,21 @@ io.on("connection", (socket) => {
         if (document) {
             responseText(document.texto)
         }
+    })
 
+    socket.on("add_document", async (name) => {
+        const alreadyExists = await findDocument(name) !== null
+
+        if (alreadyExists) {
+            socket.emit("already_existent_document", name)
+            return
+        }
+
+        const result = await addDocument(name)
+
+        if (result.acknowledged) {
+            io.emit("add_document_interface", name)
+        }
     })
 })
 

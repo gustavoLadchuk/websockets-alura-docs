@@ -15,3 +15,17 @@ export function updateDocument(name, text) {
         })
     return update
 }
+
+export function getDocuments() {
+    const documents = collectionDocuments.find().toArray()
+    return documents
+}
+
+export function addDocument(name) {
+    const result = collectionDocuments.insertOne({
+        nome: name,
+        texto: ""
+    })
+
+    return result
+}
