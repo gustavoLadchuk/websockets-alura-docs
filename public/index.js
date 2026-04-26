@@ -15,7 +15,15 @@ export function insertDocumentLink(documentName) {
         `<a 
         href="documento.html?nome=${documentName}"
          class="list-group-item list-group-item-action"
+         id="document-${documentName}"
          >
         ${documentName}
       </a>`
+}
+
+export function removeDocumentLink(name) {
+    const doc = document.getElementById(`document-${name}`)
+    console.log(doc)
+
+    documentList.removeChild(doc)
 }

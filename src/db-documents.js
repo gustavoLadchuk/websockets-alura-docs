@@ -27,5 +27,15 @@ export function addDocument(name) {
         texto: ""
     })
 
+
+
+    return result
+}
+
+export function deleteDocument(name) {
+    const result = collectionDocuments.deleteOne({
+        nome: name
+    })
+
     return result
 }

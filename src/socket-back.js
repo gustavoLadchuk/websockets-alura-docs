@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { addDocument, findDocument, getDocuments, updateDocument } from "./db-documents.js"
+import { addDocument, deleteDocument, findDocument, getDocuments, updateDocument } from "./db-documents.js"
 import io from "./server.js"
 
 
@@ -41,6 +41,14 @@ io.on("connection", (socket) => {
 
         if (result.acknowledged) {
             io.emit("add_document_interface", name)
+        }
+    })
+
+    socket.on("delete_document", async (name) => {
+        const result = await deleteDocument(name)
+
+        if (result.deletedCount) {
+            io.emit("delete_document_sucess", name)
         }
     })
 })
